@@ -9,28 +9,42 @@ export function useAuth() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else setLoading(false)
+      if (session?.user) {
+        fetchProfile(session.user.id)
+      } else {
+        setLoading(false)
+      }
+    }).catch(() => {
+      setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setUser(session?.user ?? null)
-        if (session?.user) await fetchProfile(session.user.id)
-        else { setProfile(null); setLoading(false) }
+        if (session?.user) {
+          await fetchProfile(session.user.id)
+        } else {
+          setProfile(null)
+          setLoading(false)
+        }
       }
     )
     return () => subscription.unsubscribe()
   }, [])
 
   async function fetchProfile(userId) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    setProfile(data)
-    setLoading(false)
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      setProfile(data)
+    } catch {
+      // profile未作成の場合
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function refreshProfile() {
@@ -40,3 +54,10 @@ export function useAuth() {
 
   return { user, profile, loading, refreshProfile }
 }
+```
+
+保存したらコマンドプロンプトで以下を実行してください：
+```
+git add .
+git commit -m "fix auth loading"
+git push
