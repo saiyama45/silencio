@@ -41,7 +41,7 @@ export function useAuth() {
         .single()
       setProfile(data)
     } catch {
-      // profile未作成の場合
+      setLoading(false)
     } finally {
       setLoading(false)
     }
@@ -56,8 +56,8 @@ export function useAuth() {
 }
 ```
 
-保存したらコマンドプロンプトで以下を実行してください：
+保存できたらコマンドプロンプトで実行してください：
 ```
 git add .
-git commit -m "fix auth loading"
+git commit -m "fix useAuth syntax error"
 git push
