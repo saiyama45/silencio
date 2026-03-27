@@ -54,10 +54,3 @@ export function useAuth() {
 
   return { user, profile, loading, refreshProfile }
 }
-```
-
-保存できたらコマンドプロンプトで実行してください：
-```
-git add .
-git commit -m "fix useAuth syntax error"
-git push
